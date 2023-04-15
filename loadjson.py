@@ -12,10 +12,10 @@ class LoadJson(object):
         if bool_is_url is True:
             # 'http://localhost:8080/config_server.json')
             with urlopen(self.path) as u:
-                self.target = json.loads(u.read().decode('utf-8'), object_hook=self.JSONObject)
+                self.target = json.loads(u.read().decode('utf-8'))#, object_hook=self.JSONObject)
         else:
             with open(self.path, "r") as f:
-                self.target = json.loads(f.read().encode('utf-8'), object_hook=self.JSONObject)
+                self.target = json.loads(f.read().encode('utf-8'))
 
 
     def load_from_id(self, id):
@@ -32,27 +32,32 @@ class LoadJson(object):
         else:
             return 0
 
-    # def load_from_id_dict(self, id):
-    #     config = None
-    #     count = 0
-    #     for a in self.target["config_server"]:
-    #         if a["ID"] == id:
-    #             config = self.target["config_server"][count]
-    #         count += 1
-    #
-    #     if config is not None:
-    #         return config
-    #     else:
-    #         return 0
+    def load_from_id_dict(self, id):
+        config = None
+        count = 0
+        for a in self.target["config_server"]:
+            if a["ID"] == id:
+                config = self.target["config_server"][count]
+            count += 1
+
+        if config is not None:
+            return config
+        else:
+            return 0
 
     class JSONObject:
         def __init__(self, d):
             self.__dict__ = d
 
 load_json = LoadJson("http://localhost:8080/config_server.json", True)
-this=load_json.load_from_id("xxxx1")
-print(this.Video.framerate)
+this=load_json.load_from_id_dict("xxxx1")
+print(this["Working_Time"]["Start"])
+# print(this.Working_Time.Start)
+
+# load_json = LoadJson("path_to/config_server.json", False)
+# this=load_json.load_from_id("xxxx1")
+# print(this.ID)
 
 load_json = LoadJson("path_to/config_server.json", False)
-this=load_json.load_from_id("xxxx1")
-print(this.Video.framerate)
+this=load_json.load_from_id_dict("xxxx1")
+print(this["Working_Time"]["Start"])
